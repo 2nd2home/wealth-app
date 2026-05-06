@@ -2,7 +2,7 @@ name: Deploy React to Pages
 
 on:
   push:
-    branches: ["main"] # 確保你的分支名稱是 main
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -24,11 +24,12 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: 22 # 提升到較新的版本
+          # 移除 cache: 'npm'，因為你的倉庫目前沒有 package-lock.json
 
       - name: Install dependencies
-        run: npm install
+        # 使用 --no-package-lock 來避免因為缺少 lock 檔案而報錯
+        run: npm install --no-package-lock
 
       - name: Build
         run: npm run build
@@ -39,7 +40,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './build' # React 打包後的資料夾是 build
+          path: './build'
 
   deploy:
     environment:
